@@ -74,3 +74,12 @@ del navegador). Si al llegar al servidor las reglas la rechazan, el cambio local
 **transacciones** (prestar y devolver) son la excepción: necesitan leer del servidor, así que sin conexión
 fallan en lugar de quedar en cola.
 
+## AD-2 · Persistencia
+
+- `materialRef` y `prestamosRef` son referencias tipadas con `withConverter`.
+- En `prestamos` las fechas `salida` y `devolucion` se guardan como `Timestamp`, `incidencias` como
+  lista y se añade el booleano `abierto` (no está en el modelo: se calcula con `devolucion == null`) para
+  poder consultar por él.
+- `crear`: con id hace `set` en ese documento (al importar se conservan los ids del JSON); sin id hace
+  `add` y devuelve el id nuevo.
+
