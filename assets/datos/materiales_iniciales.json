@@ -1,0 +1,14 @@
+[
+  {"id": "m-port-1", "nombre": "Portátil Lenovo ThinkPad", "categoria": "portatil", "unidades": 6, "disponibles": 6, "ubicacion": "Armario A"},
+  {"id": "m-port-2", "nombre": "Portátil HP ProBook", "categoria": "portatil", "unidades": 4, "disponibles": 4, "ubicacion": "Armario A"},
+  {"id": "m-kit-1", "nombre": "Kit Arduino Uno", "categoria": "kit", "unidades": 10, "disponibles": 10, "ubicacion": "Estantería 2"},
+  {"id": "m-kit-2", "nombre": "Kit Raspberry Pi 5", "categoria": "kit", "unidades": 5, "disponibles": 5, "ubicacion": "Estantería 2"},
+  {"id": "m-kit-3", "nombre": "Kit ESP32 con sensores", "categoria": "kit", "unidades": 8, "disponibles": 8, "ubicacion": "Estantería 3"},
+  {"id": "m-lib-1", "nombre": "Flutter in Action", "categoria": "libro", "unidades": 2, "disponibles": 2, "ubicacion": "Biblioteca", "isbn": "9781617296147"},
+  {"id": "m-lib-2", "nombre": "Clean Code", "categoria": "libro", "unidades": 3, "disponibles": 3, "ubicacion": "Biblioteca", "isbn": "9780132350884"},
+  {"id": "m-lib-3", "nombre": "Designing Data-Intensive Applications", "categoria": "libro", "unidades": 1, "disponibles": 1, "ubicacion": "Biblioteca", "isbn": "9781449373320"},
+  {"id": "m-her-1", "nombre": "Polímetro digital", "categoria": "herramienta", "unidades": 4, "disponibles": 4, "ubicacion": "Armario B"},
+  {"id": "m-her-2", "nombre": "Soldador de estaño", "categoria": "herramienta", "unidades": 3, "disponibles": 3, "ubicacion": "Armario B"},
+  {"id": "m-her-3", "nombre": "Crimpadora RJ45", "categoria": "herramienta", "unidades": 6, "disponibles": 6, "ubicacion": "Armario B"},
+  {"id": "m-her-4", "nombre": "Pulsera antiestática", "categoria": "herramienta", "unidades": 12, "disponibles": 12, "ubicacion": "Armario B"}
+]

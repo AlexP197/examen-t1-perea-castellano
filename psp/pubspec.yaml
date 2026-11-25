@@ -1,0 +1,10 @@
+name: psp_taller
+description: Parte de PSP (0490) del examen T1. Dart puro, sin Flutter.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.0
+
+dev_dependencies:
+  test: ^1.25.0
