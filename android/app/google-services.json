@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "26407059333",
+    "firebase_url": "https://examen-t1-pereacastellano-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "examen-t1-pereacastellano",
+    "storage_bucket": "examen-t1-pereacastellano.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26407059333:android:a7e82e848cb12a6d6c4eec",
+        "android_client_info": {
+          "package_name": "es.iesnewtonsalas.prestamos_taller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs4cAZ5w3eKFgDEnyIAwZpNhvhszs3Im4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
