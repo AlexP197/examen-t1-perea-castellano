@@ -98,3 +98,9 @@ desempata dos materiales con el mismo nombre y así ninguno se repite entre pág
 `prestamosAbiertosDe(materialId)` cuenta con `count()`, que devuelve solo el número sin descargar los
 documentos.
 
+## AD-4 · Modificar y borrar
+
+`actualizar` usa `update` con los campos del material (no reemplaza el documento entero). `borrar`
+llama antes a `prestamosAbiertosDe` y, si hay alguno, lanza `MaterialConPrestamosException` con un
+mensaje que dice cuántos préstamos abiertos tiene.
+

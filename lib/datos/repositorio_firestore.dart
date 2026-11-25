@@ -155,12 +155,27 @@ class RepositorioFirestore
     return agregado.count ?? 0;
   }
 
+  // ------------------------------------------------------------------ AD-4
+  /// `update` solo de los campos del material (no se sustituye el documento).
   @override
-  Future<void> actualizar(MaterialTaller material) =>
-      throw UnimplementedError('AD-4');
+  Future<void> actualizar(MaterialTaller material) {
+    return materialRef.doc(material.id).update({
+      'nombre': material.nombre,
+      'categoria': material.categoria,
+      'unidades': material.unidades,
+      'disponibles': material.disponibles,
+      'ubicacion': material.ubicacion,
+      'isbn': material.isbn,
+    });
+  }
 
+  /// No se borra un material con préstamos abiertos.
   @override
-  Future<void> borrar(String id) => throw UnimplementedError('AD-4');
+  Future<void> borrar(String id) async {
+    final abiertos = await prestamosAbiertosDe(id);
+    if (abiertos > 0) throw MaterialConPrestamosException(id, abiertos);
+    await materialRef.doc(id).delete();
+  }
 
   @override
   Future<String> prestar(String materialId, String alumno) =>
