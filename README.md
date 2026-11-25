@@ -83,3 +83,18 @@ fallan en lugar de quedar en cola.
 - `crear`: con id hace `set` en ese documento (al importar se conservan los ids del JSON); sin id hace
   `add` y devuelve el id nuevo.
 
+## AD-3 · Consultas e índices
+
+| Consulta | Índice compuesto (`firestore.indexes.json`) |
+|---|---|
+| material por categoría, ordenado por nombre | `categoria ↑, nombre ↑` |
+| material con disponibles > 0, ordenado por nombre | `nombre ↑, disponibles ↑` |
+| material por categoría y disponibles > 0, por nombre | `categoria ↑, nombre ↑, disponibles ↑` |
+| préstamos abiertos, más recientes primero | `abierto ↑, salida ↓` |
+| préstamos abiertos de un material (`count()`) | `materialId ↑, abierto ↑` |
+
+`pagina` usa `orderBy('nombre')` + `orderBy(documentId)` + `startAfter([nombre, id])` + `limit`: el id
+desempata dos materiales con el mismo nombre y así ninguno se repite entre páginas.
+`prestamosAbiertosDe(materialId)` cuenta con `count()`, que devuelve solo el número sin descargar los
+documentos.
+

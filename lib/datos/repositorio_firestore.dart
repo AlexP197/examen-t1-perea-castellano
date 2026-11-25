@@ -101,21 +101,59 @@ class RepositorioFirestore
     return ref.id;
   }
 
+  // ------------------------------------------------------------------ AD-3
+  /// Filtro por categoría (igualdad) y por disponibles > 0 (desigualdad),
+  /// ordenado por nombre y en tiempo real con `snapshots()`.
+  /// Necesita los índices compuestos de `firestore.indexes.json`.
   @override
   Stream<List<MaterialTaller>> observarMaterial({
     String? categoria,
     bool soloDisponibles = false,
-  }) => throw UnimplementedError('AD-3');
+  }) {
+    Query<MaterialTaller> q = materialRef;
+    if (categoria != null) q = q.where('categoria', isEqualTo: categoria);
+    if (soloDisponibles) q = q.where('disponibles', isGreaterThan: 0);
+    q = q.orderBy('nombre');
+    return q.snapshots().map((s) => [for (final d in s.docs) d.data()]);
+  }
 
+  /// Solo abiertos si se pide, del más reciente al más antiguo.
   @override
-  Stream<List<Prestamo>> observarPrestamos({bool soloAbiertos = false}) =>
-      throw UnimplementedError('AD-3');
+  Stream<List<Prestamo>> observarPrestamos({bool soloAbiertos = false}) {
+    Query<Prestamo> q = prestamosRef;
+    if (soloAbiertos) q = q.where('abierto', isEqualTo: true);
+    q = q.orderBy('salida', descending: true);
+    return q.snapshots().map((s) => [for (final d in s.docs) d.data()]);
+  }
 
+  /// Paginación con cursor: orderBy + startAfter + limit.
+  /// Se ordena también por el id del documento para desempatar dos materiales
+  /// con el mismo nombre; así el cursor es único y no se repite ninguno.
   @override
   Future<List<MaterialTaller>> pagina({
     int limite = 10,
     MaterialTaller? despuesDe,
-  }) => throw UnimplementedError('AD-3');
+  }) async {
+    Query<MaterialTaller> q = materialRef
+        .orderBy('nombre')
+        .orderBy(FieldPath.documentId);
+    if (despuesDe != null) {
+      q = q.startAfter([despuesDe.nombre, despuesDe.id]);
+    }
+    final snap = await q.limit(limite).get();
+    return [for (final d in snap.docs) d.data()];
+  }
+
+  /// Cuántos préstamos abiertos tiene un material, con una consulta de
+  /// agregación `count()`: el servidor cuenta y NO se descargan los documentos.
+  Future<int> prestamosAbiertosDe(String materialId) async {
+    final agregado = await prestamosRef
+        .where('materialId', isEqualTo: materialId)
+        .where('abierto', isEqualTo: true)
+        .count()
+        .get();
+    return agregado.count ?? 0;
+  }
 
   @override
   Future<void> actualizar(MaterialTaller material) =>
