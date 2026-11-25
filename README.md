@@ -120,3 +120,19 @@ desde que se leyó y repite la transacción de la segunda persona con el dato nu
 lanza `SinUnidadesException`. Además, si algo falla a mitad, no se queda la unidad descontada sin
 préstamo (todo o nada).
 
+## AD-6 · Ficheros
+
+- `ImportadorMateriales.desdeJson` valida cada registro y lanza `FormatoMaterialException` con su
+  índice (desde 0): categoría desconocida, `disponibles > unidades`, campos que faltan o de tipo
+  incorrecto. Si el JSON está mal formado o no es una lista, el índice es `-1` (no hay registro).
+  `materiales_con_errores.json` se rechaza en el registro 1 (categoría «proyector»).
+- `ExportadorPrestamos.aJson` / `desdeJson`, `aCsv` / `desdeCsv`. CSV con separador `;`, cabecera,
+  fechas en ISO 8601 y comillas (con `""` para una comilla) si un campo contiene `;`, comillas o un salto
+  de línea. Decisiones:
+  - Cabecera `id;materialId;material;alumno;salida;devolucion;dias;incidencias`: se añade `materialId`
+    porque sin él `desdeCsv` no podría reconstruir el préstamo.
+  - `incidencias` es una lista: va en una sola columna como lista JSON (`["falta el cargador"]`).
+  - `dias` es un dato calculado: se escribe pero no se lee.
+- Pruebas en `test/ficheros_test.dart`: leen los dos JSON de `assets/datos/` con `File`, escriben el CSV
+  en un fichero de `Directory.systemTemp` y lo vuelven a leer (también con una incidencia con `;`).
+

@@ -238,6 +238,10 @@ class RepositorioFirestore
     if (problema != null) throw PrestamoCerradoException(prestamoId, problema);
   }
 
+  // ------------------------------------------------------------------ AD-6
   @override
-  Future<List<Prestamo>> todos() => throw UnimplementedError('AD-6');
+  Future<List<Prestamo>> todos() async {
+    final snap = await prestamosRef.orderBy('salida', descending: true).get();
+    return [for (final d in snap.docs) d.data()];
+  }
 }
