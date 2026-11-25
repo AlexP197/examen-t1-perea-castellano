@@ -136,3 +136,7 @@ préstamo (todo o nada).
 - Pruebas en `test/ficheros_test.dart`: leen los dos JSON de `assets/datos/` con `File`, escriben el CSV
   en un fichero de `Directory.systemTemp` y lo vuelven a leer (también con una incidencia con `;`).
 
+## AD-7 · Pruebas
+
+`test/repositorio_firestore_test.dart` usa `fake_cloud_firestore`: demuestra que no se puede prestar sin
+unidades (y que no se escribe nada), y prueba también devolver, borrar con préstamos abiertos y crear.
