@@ -1,0 +1,6 @@
+[
+  {"id": "m-ok-1", "nombre": "Cable USB-C", "categoria": "herramienta", "unidades": 10, "disponibles": 10, "ubicacion": "Cajón 1"},
+  {"id": "m-mal-1", "nombre": "Proyector", "categoria": "proyector", "unidades": 1, "disponibles": 1, "ubicacion": "Aula"},
+  {"id": "m-mal-2", "nombre": "Ratón", "categoria": "herramienta", "unidades": 5, "disponibles": 7, "ubicacion": "Cajón 2"},
+  {"id": "m-mal-3", "categoria": "kit", "unidades": 2, "disponibles": 2, "ubicacion": "Estantería 1"}
+]
