@@ -104,3 +104,19 @@ documentos.
 llama antes a `prestamosAbiertosDe` y, si hay alguno, lanza `MaterialConPrestamosException` con un
 mensaje que dice cuántos préstamos abiertos tiene.
 
+## AD-5 · Transacciones
+
+`prestar` lee el material dentro de una transacción; si no quedan unidades no escribe nada y lanza
+`SinUnidadesException`; si quedan, descuenta una y crea el préstamo en la misma transacción.
+`devolver` lee el préstamo en una transacción: si ya está cerrado lanza `PrestamoCerradoException` y
+no suma nada; si está abierto lo cierra (`devolucion`, `abierto: false`, incidencia con `arrayUnion`) y
+suma la unidad con `FieldValue.increment(1)`.
+
+**Qué pasaría sin transacción si dos personas prestan la última unidad a la vez:** las dos leerían
+`disponibles = 1`, las dos verían que queda una, las dos escribirían `disponibles = 0` y las dos crearían
+su préstamo. Resultado: dos préstamos abiertos de un material que solo tiene una unidad, y el contador
+dice 0 cuando en realidad se ha prestado una unidad que no existe. Con la transacción, Firestore detecta que el material ha cambiado
+desde que se leyó y repite la transacción de la segunda persona con el dato nuevo (0), así que esa
+lanza `SinUnidadesException`. Además, si algo falla a mitad, no se queda la unidad descontada sin
+préstamo (todo o nada).
+

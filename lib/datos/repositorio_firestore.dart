@@ -177,13 +177,66 @@ class RepositorioFirestore
     await materialRef.doc(id).delete();
   }
 
+  // ------------------------------------------------------------------ AD-5
+  /// Transacción: lee el material, comprueba que quedan unidades, descuenta
+  /// una y crea el préstamo. O se hace todo o no se hace nada. Si otra persona
+  /// cambia el material a la vez, Firestore repite la transacción con el dato nuevo.
   @override
-  Future<String> prestar(String materialId, String alumno) =>
-      throw UnimplementedError('AD-5');
+  Future<String> prestar(String materialId, String alumno) async {
+    final materialDoc = materialRef.doc(materialId);
+    final prestamoDoc = prestamosRef.doc(); // id nuevo, aún sin escribir
 
+    final hecho = await db.runTransaction<bool>((tx) async {
+      final snap = await tx.get(materialDoc);
+      final m = snap.data();
+      if (m == null || m.disponibles <= 0) return false; // no se escribe nada
+      tx.update(materialDoc, {'disponibles': m.disponibles - 1});
+      tx.set(
+        prestamoDoc,
+        Prestamo(
+          id: prestamoDoc.id,
+          materialId: materialId,
+          nombreMaterial: m.nombre,
+          alumno: alumno,
+          salida: DateTime.now(),
+        ),
+      );
+      return true;
+    });
+
+    // La excepción se lanza fuera de la transacción para que llegue tal cual
+    // (dentro, algunas plataformas la envuelven en otra excepción).
+    if (!hecho) throw SinUnidadesException(materialId);
+    return prestamoDoc.id;
+  }
+
+  /// Transacción: lee el préstamo; si ya está cerrado lanza una excepción y no
+  /// suma nada. Si está abierto: lo cierra (fecha, abierto: false, incidencia
+  /// con arrayUnion) y suma la unidad al material con FieldValue.increment.
   @override
-  Future<void> devolver(String prestamoId, {String? incidencia}) =>
-      throw UnimplementedError('AD-5');
+  Future<void> devolver(String prestamoId, {String? incidencia}) async {
+    final prestamoDoc = prestamosRef.doc(prestamoId);
+
+    final problema = await db.runTransaction<String?>((tx) async {
+      final snap = await tx.get(prestamoDoc);
+      final p = snap.data();
+      if (p == null) return 'no existe';
+      if (!p.abierto) return 'ya estaba cerrado';
+
+      tx.update(prestamoDoc, {
+        'devolucion': Timestamp.now(),
+        'abierto': false,
+        if (incidencia != null && incidencia.trim().isNotEmpty)
+          'incidencias': FieldValue.arrayUnion([incidencia.trim()]),
+      });
+      tx.update(materialRef.doc(p.materialId), {
+        'disponibles': FieldValue.increment(1),
+      });
+      return null;
+    });
+
+    if (problema != null) throw PrestamoCerradoException(prestamoId, problema);
+  }
 
   @override
   Future<List<Prestamo>> todos() => throw UnimplementedError('AD-6');
